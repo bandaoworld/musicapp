@@ -1,17 +1,12 @@
 <template>
-    <van-image :src="`${musicList.al.picUrl}?param=400y400`" alt="" class="bgImg" />
+    <van-image :src="`${musicList.al.picUrl}?param=400y400`" alt="" class="bgImg"/>
     <div class="musicDetail">
         <van-row justify="space-between" align="center" class="detailTop">
             <van-col span="2" class="detailTopLeft" @click="backHome">
                 <van-icon name="arrow-down" size="30" color="#fff" />
             </van-col>
             <van-col span="14" class="leftMarquee">
-                <p style="color: #fff; font-size: .37rem;" v-if="musicList.name.length <= 12">
-                    {{ musicList.name }}
-                </p>
-                <Vue3Marquee style="color: #fff; font-size: .37rem;" v-else>
-                    {{ musicList.name }}
-                </Vue3Marquee>
+                <Vue3Marquee style="color: #fff; font-size: .37rem;">{{ musicList.name }}</Vue3Marquee>
                 <span>
                     {{ showAuthor(musicList.ar) }}
                     <van-icon name="arrow" size=".20rem" color="rgba(200, 200, 200, 0.8)" />
@@ -21,36 +16,20 @@
                 <van-icon name="share-o" size="30" color="#fff" />
             </van-col>
         </van-row>
-        <div v-if="deviceWidth < 700">
-            <div class="detailContent" v-show="!isLyricShow">
-                <img src="@/assets/needle-ab.png" alt="" class="img_needle" :class="{ img_needle_active: !isBtnShow }">
-                <img src="@/assets/cd.png" alt="" class="img_cd" />
-                <van-image round :src="`${musicList.al.picUrl}?param=300y300`" alt="" class="img_al"
-                    @click="isLyricShow = true" :class="{ img_al_active: !isBtnShow, img_al_paused: isBtnShow }" />
-            </div>
 
-            <div class="musicLyric" ref="musicLyric" v-show="isLyricShow">
-                <p v-for="item in lyric" :key="item"
-                    :class="{ active: (currentTime * 1000 >= item.time && currentTime * 1000 < item.pre) }"
-                    @click="this.isLyricShow = false;" id="musicLyric">
-                    {{ (this.lyricList.lyric[0] == '[') ? item.lrc : item }}
-                </p>
-            </div>
+        <div class="detailContent" v-show="!isLyricShow">
+            <img src="@/assets/needle-ab.png" alt="" class="img_needle" :class="{ img_needle_active: !isBtnShow }">
+            <img src="@/assets/cd.png" alt="" class="img_cd"/>
+            <van-image round :src="`${musicList.al.picUrl}?param=300y300`" alt="" class="img_al" @click="isLyricShow = true"
+                :class="{ img_al_active: !isBtnShow, img_al_paused: isBtnShow }"/>
         </div>
-        <div style="display: flex; width: 95%; padding: 0 0.8rem;" v-else>
-            <div class="detailContent">
-                <img src="@/assets/needle-ab.png" alt="" class="img_needle" :class="{ img_needle_active: !isBtnShow }">
-                <img src="@/assets/cd.png" alt="" class="img_cd" />
-                <van-image round :src="`${musicList.al.picUrl}?param=300y300`" alt="" class="img_al"
-                    :class="{ img_al_active: !isBtnShow, img_al_paused: isBtnShow }" />
-            </div>
 
-            <div class="musicLyric" ref="musicLyric">
-                <p v-for="item in lyric" :key="item"
-                    :class="{ active: (currentTime * 1000 >= item.time && currentTime * 1000 < item.pre) }">
-                    {{ (this.lyricList.lyric[0] == '[') ? item.lrc : item }}
-                </p>
-            </div>
+        <div class="musicLyric" ref="musicLyric" v-show="isLyricShow">
+            <p v-for="item in lyric" :key="item"
+                :class="{ active: (currentTime * 1000 >= item.time && currentTime * 1000 < item.pre) }"
+                @click="this.isLyricShow = false;">
+                {{ (this.lyricList.lyric[0] == '[') ? item.lrc : item }}
+            </p>
         </div>
 
         <div class="detailFooter">
@@ -113,10 +92,10 @@
 </template>
 
 <script>
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 import { Vue3Marquee } from 'vue3-marquee'
 import 'vue3-marquee/dist/style.css'
-import { mapMutations, mapState, useStore } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 export default {
     name: "musicDetail",
     props: ['musicList', 'playMusic', 'isBtnShow', 'addDuration'],
@@ -125,31 +104,6 @@ export default {
     },
     setup(props) {
 
-        let deviceWidth = ref(document.documentElement.clientWidth || window.innerWidth)
-        let deviceHeight = ref(document.documentElement.clientHeight || window.innerHeight)
-        const state = reactive({
-            'hight': (deviceHeight.value / 50 - 3) + 'rem',
-        })
-        window.onresize = function () {
-            deviceWidth.value = document.documentElement.clientWidth || window.innerWidth
-            deviceHeight.value = document.documentElement.clientHeight || window.innerHeight
-            if (deviceWidth.value > 700) {
-                console.log(deviceWidth.value);
-            }
-            if (deviceHeight.value < 800) {
-                state.hight = (deviceHeight.value / 50 - 3) + 'rem'
-            } else {
-                state.hight = (deviceHeight.value / 50 - 2.5) + 'rem'
-            }
-        }
-        const $store = useStore();
-        let isLyricShow = ref(false)
-
-        console.log($store.state.lyricList.lyric);
-        function backHome() {
-            isLyricShow.value = false;
-            $store.commit('updateDetailShow', false);
-        }
         function showAuthor(authorList) {
             const authors = reactive([])
             for (let i = 0; i < authorList.length; i++) {
@@ -167,15 +121,20 @@ export default {
             return `${minute}:${second}`
         }
         return {
-            state,
-            deviceWidth,
-            isLyricShow,
-            backHome,
             showAuthor,
-            currentTimeFormat,
+            currentTimeFormat
+        }
+    },
+    data() {
+        return {
+            isLyricShow: false
         }
     },
     methods: {
+        backHome() {
+            this.isLyricShow = false;
+            this.updateDetailShow();
+        },
         playSong(num) {
             let index = this.playlistIndex + num
             if (index < 0) {
@@ -184,6 +143,7 @@ export default {
                 index = 0
             }
             this.updatePlaylistIndex(index)
+
         },
         ...mapMutations(['updateDetailShow', 'updatePlaylistIndex']),
     },
@@ -228,12 +188,9 @@ export default {
                 if (this.lyricList.lyric[0] == '[') {
                     let p = document.querySelector("p.active")
                     try {
-                        // if (p.offsetTop > 300) {
                         if (p.offsetTop > 300) {
                             console.log([p][0].innerHTML);
-                            // this.$refs.musicLyric.scrollTop = p.offsetTop - 320
                             this.$refs.musicLyric.scrollTop = p.offsetTop - 320
-                            console.log(deviceWidth);
                         }
                     }
                     catch {
@@ -241,6 +198,7 @@ export default {
                     }
                 }
                 if (newValue === this.duration) {
+
                     if (this.playlistIndex == this.playlist.length - 1) {
                         this.updatePlaylistIndex(0)
                         this.playMusic()
@@ -250,11 +208,13 @@ export default {
                 }
             },
             deep: true,
-        },
+
+        }
     },
     mounted() {
         this.addDuration()
-    },
+        console.log(this.lyricList.lyric);
+    }
 }
 </script>
 
@@ -379,8 +339,7 @@ export default {
 
 .musicLyric {
     width: 100%;
-    // https://blog.csdn.net/qq_43426246/article/details/123018552
-    height: v-bind("state.hight");
+    height: 14rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -424,7 +383,7 @@ export default {
 }
 
 .detailFooter {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     right: 1%;
     left: 1%;
@@ -433,7 +392,6 @@ export default {
     align-items: center;
     flex-direction: column;
     text-align: center;
-    z-index: 1;
 
     .footerTop {
         height: 1rem;

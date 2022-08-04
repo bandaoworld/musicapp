@@ -237,7 +237,7 @@ export default {
                         }
                     }
                     catch {
-                        console.log("歌词滚动不了");
+                        // console.log("歌词滚动不了");
                     }
                 }
                 if (newValue === this.duration) {

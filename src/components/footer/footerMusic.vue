@@ -13,8 +13,8 @@
             </van-col>
             <van-col span="5">
                 <div class="footerRight">
-                    <van-icon name="play-circle-o" size="30" @click="playMusic" v-if="isBtnShow" color="#4b4b4b"/>
-                    <van-icon name="pause-circle-o" size="30" @click="playMusic" v-else color="#4b4b4b"/>
+                    <van-icon name="play-circle-o" size="30" @click="playMusic" v-if="isBtnShow" color="#4b4b4b" />
+                    <van-icon name="pause-circle-o" size="30" @click="playMusic" v-else color="#4b4b4b" />
                     <van-icon name="add-square" size="30" color="#4b4b4b" />
                 </div>
             </van-col>
@@ -26,19 +26,30 @@
             :src="`https://music.163.com/song/media/outer/url?id=${playlist[playlistIndex].id}.mp3`"></audio>
         <van-popup v-model:show="detailShow" position="bottom" duration="0.5s"
             :style="{ height: '100%', width: '100%' }">
-            <musicDetail :musicList="playlist[playlistIndex]" :playMusic="playMusic" :isBtnShow="isBtnShow" :addDuration="addDuration">
+            <musicDetail :musicList="playlist[playlistIndex]" :playMusic="playMusic" :isBtnShow="isBtnShow"
+                :addDuration="addDuration">
             </musicDetail>
         </van-popup>
     </div>
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations, mapState, useStore } from 'vuex'
 import musicDetail from './musicDetail'
-
+import { onMounted, onUpdated } from "vue"
 export default {
     name: "footerMusic",
-
+    setup() {
+        const $store = useStore();
+        // $store.dispatch("getLyric", this.playlist[this.playlistIndex].id)
+        // console.log($store.state);
+        onMounted(() => {
+            $store.dispatch("getLyric", $store.state.playlist[$store.state.playlistIndex].id)
+        })
+        onUpdated(() => {
+            $store.dispatch("getLyric", $store.state.playlist[$store.state.playlistIndex].id)
+        })
+    },
     data() {
         return {
             interVal: 0
@@ -50,12 +61,12 @@ export default {
     // 页面挂载
     mounted() {
         // console.log(this.$refs.myAudio);
-        this.$store.dispatch("getLyric", this.playlist[this.playlistIndex].id)
+        // this.$store.dispatch("getLyric", this.playlist[this.playlistIndex].id)
     },
 
     // 页面更新
     updated() {
-        this.$store.dispatch("getLyric", this.playlist[this.playlistIndex].id)
+        // this.$store.dispatch("getLyric", this.playlist[this.playlistIndex].id)
         this.addDuration()
     },
     methods: {
@@ -70,9 +81,8 @@ export default {
                 this.updateIsBtnShow(true)
                 clearInterval(this.interVal) //暂停清除定时器
             }
-
         },
-        addDuration(){
+        addDuration() {
             this.updateDuration(this.$refs.myAudio.duration)
         },
         updateTime() {
@@ -114,8 +124,8 @@ export default {
     bottom: -0.01rem;
     border-top: 0.04rem solid rgba(97, 97, 97, 0.199);
     padding: 0.2rem;
-    box-shadow:0 0 0.6rem rgba(0, 0, 0, 0.3);
-    
+    box-shadow: 0 0 0.6rem rgba(0, 0, 0, 0.3);
+
     .footerLeft {
         display: flex;
         align-items: center;
@@ -140,7 +150,7 @@ export default {
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
-                
+
             }
 
             span {
@@ -156,7 +166,7 @@ export default {
         align-items: center;
         position: relative;
         top: 0.12rem;
-        
+
     }
 }
 </style>

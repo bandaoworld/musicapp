@@ -1,6 +1,6 @@
 <template>
     <div class="loginView">
-        <van-icon name="arrow-left" @click="router.go(-1)" size="25" style="position: absolute;left: 0.25rem;"
+        <van-icon name="arrow-left" @click="$router.go(-1)" size="25" style="position: absolute;left: 0.25rem;"
             color="#b11f26" />
         <van-icon name="music-o" size="2rem" color="#c9353f" class="icon" />
         <van-cell-group inset class="input">
@@ -19,59 +19,60 @@
 
 <script>
 import { getCaptcha, getLoginUser } from '@/request/api/home'
-import { reactive, toRefs } from 'vue'
-import { useStore } from "vuex";
-import { useRouter } from 'vue-router';
+import { reactive } from 'vue'
 export default {
     name: "loginView",
     setup() {
-        const $store = useStore();
-        const router = useRouter();
-
         const state = reactive({
             phone: '',
             password: '',
             captcha: ''
         })
-        async function login() {
-            // let response = await $store.dispatch('getLogin', { phone: state.phone, password: state.password, captcha: state.captcha })
+        return {
+            state
+        }
+    },
+    data() {
+        return {
+            phone: '',
+            password: '',
+            captcha: ''
+        }
+    },
+    methods: {
+        async login() {
+            // let response = await this.$store.dispatch('getLogin', { phone: this.phone, password: this.password, captcha: this.captcha })
 
-            let response = reactive({
+            let response = {
                 "code": 200,
                 "account": {
                     "id": 357301093,
                 },
                 "token": "访问不了真实的网址，就只能这样子写了，这个是token",
                 "message": "手动写的网页咋可能会有这个错误"
-            })
+
+            }
             // if (response.data.code == 200) {
             if (response.code == 200) {
-                $store.commit('updateIsLogin', true);
-                $store.commit('updateToken', response.token);
+                this.$store.commit('updateIsLogin', true);
+                this.$store.commit('updateToken', response.token);
 
                 let userResult = await getLoginUser(response.account.id)
                 console.log(userResult);
-                $store.commit('updateUser', userResult)
+                this.$store.commit('updateUser', userResult)
 
-                router.push('/infoUser')
+                this.$router.push('/infoUser')
             } else {
                 console.log(response.message);
-                password = ''
+                this.password = ''
+            }
+        },
+        getMyCaptcha(event) {
+            if (this.phone) {
+                getCaptcha(this.phone)
             }
         }
-        function getMyCaptcha(event) {
-            if (state.phone) {
-                getCaptcha(state.phone)
-            }
-        }
-        return {
-            ...toRefs(state),
-            state,
-            router,
-            login,
-            getMyCaptcha
-        }
-    },
+    }
 };
 
 </script>

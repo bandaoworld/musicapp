@@ -2,7 +2,7 @@
     <van-image :src="playlist.coverImgUrl" alt="" class="bgImg"/>
     <van-row justify="space-between" align="center" class="itemMusicTop">
         <van-col span="8" class="itemLeft">
-            <van-icon name="arrow-left" @click="$router.go(-1)" size="25" />
+            <van-icon name="arrow-left" @click="router.go(-1)" size="25" />
             <span>歌单</span>
         </van-col>
         <van-col span="8" class="itemRight">
@@ -67,11 +67,12 @@
 
 <script>
 import { getMusicItemList } from '@/request/api/item'
+import { useRouter } from 'vue-router';
 export default {
     name: "itemMusicTop",
     props: ['playlist'],
     setup(props) {
-        // console.log(props);
+        const router = useRouter();
         // 通过props进行传值，判断如果没有，则从sessionStorage获取
         if ((props.playlist.creator = "")) {
             try {
@@ -95,10 +96,10 @@ export default {
             return num
         }
         return {
+            router,
             changeCount
         }
     }
-
 }
 </script>
 

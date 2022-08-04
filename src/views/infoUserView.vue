@@ -34,10 +34,12 @@ import musicPlaylist from '@/components/item/musicPlaylist'
 import { reactive, onMounted } from 'vue'
 import { getMusicItemList, getItemList } from '@/request/api/item'
 import { mapState } from 'vuex'
+import { useRouter } from 'vue-router';
 export default {
     name: "infoUserView",
     setup() {
-        const user = {
+        const router = useRouter();
+        const user = reactive({
             "code": 200,
             "profile": {
                 "backgroundUrl": "https://p4.music.126.net/O2jCbja9CUsaj3c17S8kyA==/18589443092870290.jpg",
@@ -47,13 +49,19 @@ export default {
                 "avatarUrl": "https://p3.music.126.net/mGZNPrGFey51Qoa8Lcfn6g==/109951163273589284.jpg",
                 "userId": 357301093,
             },
-        }
+        })
+        // console.log(user);
         const state = reactive({
             // 歌单详情页数据
             playlist: {},
             // 歌单歌曲
             itemList: {}
         })
+
+        function deleteToken() {
+            localStorage.removeItem('token')
+            router.go(-1)
+        }
         onMounted(async () => {
             let playlistId = 503031497
 
@@ -74,23 +82,14 @@ export default {
         })
         return {
             user,
-            state
+            state,
+            router,
+            deleteToken
         }
     },
     computed: {
         ...mapState(['user']),
-
     },
-    mounted() {
-        console.log(this.user);
-    }
-    ,
-    methods: {
-        deleteToken() {
-            localStorage.removeItem('token')
-            this.$router.go(-1)
-        }
-    }
 }
 </script>
 
