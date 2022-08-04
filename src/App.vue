@@ -8,9 +8,6 @@ export default {
     components: {
         footerMusic
     },
-    setup() {
-
-    }
 }
 </script>
 <style lang="less">

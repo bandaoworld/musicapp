@@ -5,25 +5,35 @@
         </van-col>
         <van-col span="14">
             <van-row justify="space-between" align="center" class="topContent">
-                <van-col span="6" @click="$router.push('/infoUser')">我的</van-col>
+                <van-col span="6" @click="router.push('/infoUser')">登录</van-col>
                 <van-col span="6" class="active">发现</van-col>
                 <van-col span="6" @click="clickYunCun">云村</van-col>
-                <van-col span="6">视频</van-col>
+                <van-col span="6">
+                    音乐
+                </van-col>
             </van-row>
         </van-col>
         <van-col span="2" class="topRight">
-            <van-icon name="search" size=".6rem" @click="$router.push('/search')" />
+            <van-icon name="search" size=".6rem" @click="router.push('/search')" />
         </van-col>
     </van-row>
 </template>
 
 <script>
+import { useStore } from "vuex";
+import { useRouter } from 'vue-router';
 export default {
     name: 'topNav',
-    methods: {
-        clickYunCun(event) {
-            this.$store.commit('updateToken', "哟，前面进来的，还有另外一种进来的方式嗷");
-            this.$router.push('/infoUser')
+    setup() {
+        const $store = useStore();
+        const router = useRouter();
+        function clickYunCun(event) {
+            $store.commit('updateToken', "哟，前面进来的，还有另外一种进来的方式嗷");
+            router.push('/infoUser')
+        }
+        return {
+            clickYunCun,
+            router
         }
     }
 }

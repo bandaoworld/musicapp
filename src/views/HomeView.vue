@@ -1,9 +1,9 @@
 <template>
-    <topNav></topNav>
-    <swiperTop></swiperTop>
-    <iconList></iconList>
+    <topNav/>
+    <swiperTop/>
+    <iconList/>
     <hr>
-    <musicList></musicList>
+    <musicList/>
 </template>
 
 <script>

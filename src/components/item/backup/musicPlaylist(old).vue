@@ -19,12 +19,12 @@
 
 <script>
 import { reactive } from 'vue'
-import { useStore } from "vuex";
+import { mapMutations } from 'vuex'
 export default {
     name: "musicPlaylist",
     props: ['itemList'],
-    setup(props) {
-        const $store = useStore();
+    setup() {
+
         function showAuthor(authorList) {
             const authors = reactive([])
             for (let i = 0; i < authorList.length; i++) {
@@ -41,17 +41,19 @@ export default {
                 console.log("MV打开失败");
             }
         }
-        function playMusic(index) {
-            console.log(index);
-            $store.commit("updatePlaylist", props.itemList)
-            $store.commit("updatePlaylistIndex", index)
-        }
         return {
             showAuthor,
-            mvClick,
-            playMusic
+            mvClick
         }
-    }
+    },
+    methods: {
+        playMusic(index) {
+            console.log(index);
+            this.updatePlaylist(this.itemList)
+            this.updatePlaylistIndex(index)
+        },
+        ...mapMutations(['updatePlaylist', 'updatePlaylistIndex'])
+    },
 }
 </script>
 
